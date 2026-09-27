@@ -6,7 +6,7 @@
 <title>Invitation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 <style>
   :root {
@@ -26,8 +26,6 @@
     --gold: #d9a441;
     --focus: #1f5f8b;
 
-    --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
-    --display: "Fraunces", Georgia, "Times New Roman", serif;
     --ui: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
 
@@ -169,12 +167,12 @@
     height: 1px; background: linear-gradient(90deg, transparent, rgba(123, 92, 96, .12), transparent);
   }
 
-  .date { margin: 0 0 18px; text-align: right; font: 500 1.35rem/1 var(--hand); color: var(--ink-soft); }
-  .salutation { margin: 0 0 10px; font: 700 2.4rem/1.05 var(--hand); color: var(--red-dark); }
-  .body-text { margin: 0 0 12px; font: 500 1.55rem/1.28 var(--hand); color: var(--ink); max-width: 34ch; }
+  .date { margin: 0 0 18px; text-align: right; font: 400 .95rem/1 var(--ui); color: var(--ink-soft); }
+  .salutation { margin: 0 0 12px; font: 700 1.7rem/1.15 var(--ui); color: var(--red-dark); }
+  .body-text { margin: 0 0 12px; font: 400 1.1rem/1.55 var(--ui); color: var(--ink); max-width: 40ch; }
   .question {
     margin: 26px 0 6px;
-    font: italic 600 clamp(1.7rem, 6.4vw, 2.3rem)/1.12 var(--display);
+    font: 700 clamp(1.45rem, 5.6vw, 1.9rem)/1.2 var(--ui);
     color: var(--ink);
     text-wrap: balance;
   }
@@ -208,8 +206,8 @@
 
   /* ---------- After YES ---------- */
   .plans { animation: letterIn .6s cubic-bezier(.2,.8,.25,1) both; }
-  .yay { margin: 0 0 4px; font: 700 2.3rem/1.05 var(--hand); color: var(--red-dark); }
-  .plans-lead { margin: 0 0 18px; font: 500 1.5rem/1.25 var(--hand); color: var(--ink); }
+  .yay { margin: 0 0 6px; font: 700 1.7rem/1.15 var(--ui); color: var(--red-dark); }
+  .plans-lead { margin: 0 0 18px; font: 400 1.1rem/1.5 var(--ui); color: var(--ink); }
   .note { margin: 0 0 12px; font: 500 .85rem/1.3 var(--ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
 
   .choices {
@@ -250,7 +248,7 @@
   .choice input:checked + label .box { transform: scale(1); }
   .choice input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
 
-  .idea-label { display: block; margin-bottom: 8px; font: 700 1.6rem/1 var(--hand); color: var(--ink); }
+  .idea-label { display: block; margin-bottom: 8px; font: 700 1.1rem/1.2 var(--ui); color: var(--ink); }
   #idea {
     width: 100%;
     min-height: 84px;
@@ -272,8 +270,8 @@
   .status { margin: 0; min-height: 1.3em; font: 500 .95rem/1.35 var(--ui); color: var(--red-dark); text-align: center; }
 
   .done { text-align: center; padding-block: 12px; animation: letterIn .6s cubic-bezier(.2,.8,.25,1) both; }
-  .done .big { margin: 8px 0; font: italic 600 clamp(1.8rem, 7vw, 2.4rem)/1.1 var(--display); color: var(--ink); }
-  .done p { margin: 0 auto; max-width: 34ch; font: 500 1.5rem/1.25 var(--hand); color: var(--ink-soft); }
+  .done .big { margin: 8px 0; font: 700 clamp(1.5rem, 6vw, 1.9rem)/1.2 var(--ui); color: var(--ink); }
+  .done p { margin: 0 auto; max-width: 34ch; font: 400 1.05rem/1.5 var(--ui); color: var(--ink-soft); }
   .done svg { width: 64px; margin-inline: auto; display: block; }
 
   /* ---------- Modal ---------- */
@@ -300,7 +298,7 @@
   .modal-heart { width: 56px; display: block; margin: 0 auto 10px; }
   .modal-heart.beat { animation: beat 1s ease-in-out infinite; }
   @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.18); } 30% { transform: scale(.96); } 45% { transform: scale(1.1); } }
-  .modal-title { margin: 0 0 8px; font: italic 600 1.7rem/1.15 var(--display); color: var(--ink); }
+  .modal-title { margin: 0 0 8px; font: 700 1.4rem/1.2 var(--ui); color: var(--ink); }
   .modal-text { margin: 0 auto; max-width: 30ch; font: 400 1rem/1.45 var(--ui); color: var(--ink-soft); }
   .modal-summary {
     margin: 16px 0 0; padding: 12px 14px;
