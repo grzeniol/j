@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>List do Juli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,600&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #dce6ee;
+    --bg-dot: #c8d6e2;
+    --red: #c8323c;
+    --red-light: #d9444d;
+    --red-dark: #a3222d;
+    --red-deep: #7a1420;
+    --liner: #f6d9d6;
+    --paper: #fffbf5;
+    --paper-edge: #efe4d6;
+    --ink: #3a2226;
+    --ink-soft: #7b5c60;
+    --cream: #fff1e4;
+    --gold: #d9a441;
+    --focus: #1f5f8b;
+
+    --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --ui: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    padding-inline: 16px;
+    padding-block: max(24px, env(safe-area-inset-top)) max(32px, env(safe-area-inset-bottom));
+    background-color: var(--bg);
+    background-image: radial-gradient(var(--bg-dot) 1.2px, transparent 1.6px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: var(--ui);
+    display: grid;
+    place-items: center;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  [hidden] { display: none !important; }
+
+  /* ---------- Envelope stage ---------- */
+  .stage {
+    width: min(100%, 460px);
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+    padding-top: 90px;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .stage.leave { opacity: 0; transform: translateY(30px); }
+
+  .envelope {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    container-type: inline-size;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    filter: drop-shadow(0 14px 20px rgba(58, 20, 28, .2));
+  }
+  .envelope:focus-visible { outline: 3px solid var(--focus); outline-offset: 6px; }
+
+  .inside { position: absolute; inset: 0; border-radius: 6px; background: var(--red-deep); }
+
+  .paper {
+    position: absolute; left: 7%; right: 7%; top: 7%; height: 86%;
+    background: var(--paper);
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    z-index: 2;
+    padding: 5cqw 6cqw;
+    transition: transform .9s cubic-bezier(.2,.8,.25,1);
+  }
+  .paper .greet { font: 500 3.6cqw/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
+  .paper .line { height: 1.4cqw; margin-top: 3.4cqw; border-radius: 1cqw; background: #eadfd2; }
+  .paper .line:nth-child(3) { width: 82%; }
+  .paper .line:nth-child(4) { width: 64%; }
+  .out .paper { transform: translateY(-58%); }
+
+  .pocket {
+    position: absolute; inset: 0; z-index: 3; border-radius: 6px;
+    background: linear-gradient(0deg, #b42833, #c3303a);
+    clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+  }
+  .pocket svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .flap-wrap {
+    position: absolute; inset: 0; z-index: 4;
+    perspective: 900px;
+    pointer-events: none;
+    filter: drop-shadow(0 .6cqw .8cqw rgba(60, 10, 18, .28));
+    transition: z-index 0s linear 0s;
+  }
+  .flap {
+    position: absolute; left: 0; right: 0; top: 0; height: 58%;
+    background: linear-gradient(180deg, #d4414a, #c9363f);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: 50% 0;
+    transition: transform .6s cubic-bezier(.5,0,.3,1);
+  }
+  .open .flap-wrap { z-index: 1; transition-delay: .3s; }
+  .open .flap { transform: rotateX(180deg); }
+
+  .stamp {
+    --r: 1.1cqw;
+    position: absolute; top: 5cqw; right: 5cqw; z-index: 6;
+    width: 16cqw; aspect-ratio: 5 / 6;
+    padding: calc(1.6 * var(--r));
+    background: #fdfaf4;
+    -webkit-mask:
+      radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)),
+      linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+    mask:
+      radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)),
+      linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+    transition: opacity .3s ease;
+  }
+  .stamp svg { display: block; width: 100%; height: 100%; }
+  .open .stamp { opacity: 0; }
+
+  .address {
+    position: absolute; right: 7cqw; bottom: 7cqw; z-index: 5;
+    font: 400 3.4cqw/1.5 var(--ui);
+    letter-spacing: .02em;
+    color: rgba(255, 241, 228, .85);
+  }
+  .address span { display: block; }
+  .address small { font-size: inherit; opacity: .7; margin-right: .6em; }
+
+  .hint {
+    margin: 0;
+    font: 500 .9rem/1.2 var(--ui);
+    letter-spacing: .04em;
+    color: var(--ink-soft);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink { 50% { opacity: .25; } }
+
+  /* ---------- Letter ---------- */
+  .letter {
+    position: relative;
+    width: min(100%, 560px);
+    background: var(--paper);
+    border-radius: 4px;
+    padding: clamp(24px, 6vw, 52px) clamp(20px, 6vw, 52px) clamp(28px, 6vw, 48px);
+    box-shadow: 0 1px 0 var(--paper-edge), 0 24px 50px -12px rgba(58, 20, 28, .28);
+    opacity: 0;
+  }
+  .letter.in { animation: letterIn .7s cubic-bezier(.2,.8,.25,1) forwards; }
+  @keyframes letterIn {
+    from { opacity: 0; transform: translateY(28px) scale(.96); }
+    to   { opacity: 1; transform: none; }
+  }
+  .letter::before { /* fold crease */
+    content: ""; position: absolute; left: 0; right: 0; top: 33%;
+    height: 1px; background: linear-gradient(90deg, transparent, rgba(123, 92, 96, .12), transparent);
+  }
+
+  .date { margin: 0 0 18px; text-align: right; font: 500 1.35rem/1 var(--hand); color: var(--ink-soft); }
+  .salutation { margin: 0 0 10px; font: 700 2.4rem/1.05 var(--hand); color: var(--red-dark); }
+  .body-text { margin: 0 0 12px; font: 500 1.55rem/1.28 var(--hand); color: var(--ink); max-width: 34ch; }
+  .question {
+    margin: 26px 0 6px;
+    font: italic 600 clamp(1.7rem, 6.4vw, 2.3rem)/1.12 var(--display);
+    color: var(--ink);
+    text-wrap: balance;
+  }
+
+  .answer-area { position: relative; height: 170px; margin-top: 4px; }
+  .btn {
+    font: 700 1.05rem/1 var(--ui);
+    letter-spacing: .08em;
+    border-radius: 999px;
+    padding: 16px 30px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    touch-action: manipulation;
+  }
+  .btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .answer-area .btn { position: absolute; left: 0; top: 0; }
+  #yesBtn {
+    background: var(--red); color: #fff;
+    box-shadow: 0 6px 16px -4px rgba(200, 50, 60, .55);
+    transform-origin: 50% 50%;
+    transition: background .2s;
+    z-index: 2;
+  }
+  #yesBtn:hover { background: var(--red-dark); }
+  #noBtn {
+    background: transparent; color: var(--ink);
+    border-color: var(--ink-soft);
+    transition: transform .32s cubic-bezier(.3,1.3,.5,1);
+    z-index: 1;
+  }
+
+  /* ---------- After YES ---------- */
+  .plans { animation: letterIn .6s cubic-bezier(.2,.8,.25,1) both; }
+  .yay { margin: 0 0 4px; font: 700 2.3rem/1.05 var(--hand); color: var(--red-dark); }
+  .plans-lead { margin: 0 0 18px; font: 500 1.5rem/1.25 var(--hand); color: var(--ink); }
+  .note { margin: 0 0 12px; font: 500 .85rem/1.3 var(--ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+
+  .choices {
+    border: 0; margin: 0 0 22px; padding: 0;
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  }
+  .choice { position: relative; }
+  .choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .choice label {
+    position: relative;
+    display: flex; align-items: center; gap: 8px;
+    min-height: 54px;
+    padding: 10px 12px;
+    border: 1.5px solid #e4d6c8;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    font: 500 1rem/1.2 var(--ui);
+    color: var(--ink);
+    transition: border-color .15s, background .15s, transform .15s;
+    user-select: none;
+  }
+  .choice label:hover { border-color: #d4a7a2; }
+  .choice label:active { transform: scale(.98); }
+  .box {
+    position: absolute; top: -8px; right: -8px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--red);
+    display: grid; place-items: center;
+    transform: scale(0);
+    transition: transform .22s cubic-bezier(.3,1.6,.5,1);
+    box-shadow: 0 2px 6px rgba(200, 50, 60, .4);
+  }
+  .box svg { width: 14px; height: 14px; }
+  .emo { font-size: 1.3rem; line-height: 1; flex: none; }
+  .choice input:checked + label { border-color: var(--red); background: #fdf0ef; }
+  .choice input:checked + label .box { transform: scale(1); }
+  .choice input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .idea-label { display: block; margin-bottom: 8px; font: 700 1.6rem/1 var(--hand); color: var(--ink); }
+  #idea {
+    width: 100%;
+    min-height: 84px;
+    resize: vertical;
+    padding: 12px 14px;
+    border: 1.5px solid #e4d6c8;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font: 400 1rem/1.4 var(--ui);
+  }
+  #idea::placeholder { color: #b39c9a; }
+  #idea:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(200, 50, 60, .15); }
+
+  .send-row { margin-top: 20px; display: grid; gap: 10px; }
+  #sendBtn { width: 100%; background: var(--red); color: #fff; box-shadow: 0 6px 16px -4px rgba(200, 50, 60, .5); }
+  #sendBtn:hover { background: var(--red-dark); }
+  #sendBtn:disabled { opacity: .65; cursor: progress; }
+  .status { margin: 0; min-height: 1.3em; font: 500 .95rem/1.35 var(--ui); color: var(--red-dark); text-align: center; }
+
+  .done { text-align: center; padding-block: 12px; animation: letterIn .6s cubic-bezier(.2,.8,.25,1) both; }
+  .done .big { margin: 8px 0; font: italic 600 clamp(1.8rem, 7vw, 2.4rem)/1.1 var(--display); color: var(--ink); }
+  .done p { margin: 0 auto; max-width: 34ch; font: 500 1.5rem/1.25 var(--hand); color: var(--ink-soft); }
+  .done svg { width: 64px; margin-inline: auto; display: block; }
+
+  /* ---------- Modal ---------- */
+  .modal {
+    position: fixed; inset: 0; z-index: 40;
+    display: grid; place-items: center;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    background: rgba(40, 14, 20, .45);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    animation: fadeIn .25s ease both;
+  }
+  @keyframes fadeIn { from { opacity: 0; } }
+  .modal-card {
+    width: min(100%, 380px);
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 30px 24px 22px;
+    text-align: center;
+    box-shadow: 0 30px 60px -15px rgba(40, 14, 20, .45);
+    animation: popIn .4s cubic-bezier(.3,1.4,.5,1) both;
+  }
+  @keyframes popIn { from { opacity: 0; transform: translateY(16px) scale(.94); } }
+  .modal-heart { width: 56px; display: block; margin: 0 auto 10px; }
+  .modal-heart.beat { animation: beat 1s ease-in-out infinite; }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.18); } 30% { transform: scale(.96); } 45% { transform: scale(1.1); } }
+  .modal-title { margin: 0 0 8px; font: italic 600 1.7rem/1.15 var(--display); color: var(--ink); }
+  .modal-text { margin: 0 auto; max-width: 30ch; font: 400 1rem/1.45 var(--ui); color: var(--ink-soft); }
+  .modal-summary {
+    margin: 16px 0 0; padding: 12px 14px;
+    background: #f7ede6; border-radius: 10px;
+    text-align: left;
+    font: 400 .95rem/1.45 var(--ui); color: var(--ink);
+  }
+  .modal-summary b { font-weight: 700; }
+  .modal-summary p { margin: 0; }
+  .modal-summary p + p { margin-top: 6px; }
+  .modal-actions { margin-top: 20px; display: grid; gap: 10px; }
+  .modal-actions .btn { width: 100%; }
+  .btn-primary { background: var(--red); color: #fff; }
+  .btn-primary:hover { background: var(--red-dark); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: #d9c7bb; }
+
+  /* hearts burst */
+  .heart-fx {
+    position: fixed; pointer-events: none; z-index: 50;
+    font-size: 20px; line-height: 1; color: var(--red);
+    animation: burst 1.1s cubic-bezier(.15,.7,.3,1) forwards;
+  }
+  @keyframes burst {
+    from { transform: translate(-50%, -50%) scale(.4); opacity: 1; }
+    to   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.1) rotate(var(--rot)); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ ENVELOPE ============ -->
+<section class="stage" id="stage">
+  <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Otwórz kopertę od Grzesia">
+    <div class="inside"></div>
+    <div class="paper" aria-hidden="true">
+      <div class="greet">Date invitation</div>
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+    <div class="pocket">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 100 L50 60 L100 100 Z" fill="rgba(0,0,0,.07)"/></svg>
+    </div>
+    <div class="flap-wrap"><div class="flap"></div></div>
+    <div class="stamp" aria-hidden="true">
+        <svg viewBox="0 0 100 120">
+          <rect x="0" y="0" width="100" height="120" fill="#cfe2ec"/>
+          <rect x="0" y="86" width="100" height="34" fill="#b9d3e0"/>
+          <!-- dalmatian -->
+          <g transform="translate(0,-2)">
+            <ellipse cx="50" cy="54" rx="25" ry="27" fill="#fff" stroke="#2b2426" stroke-width="2"/>
+            <circle cx="60" cy="36" r="4" fill="#1d1a1b"/>
+            <circle cx="40" cy="38" r="2.6" fill="#1d1a1b"/>
+            <circle cx="48" cy="31" r="2" fill="#1d1a1b"/>
+            <circle cx="66" cy="60" r="2.6" fill="#1d1a1b"/>
+            <circle cx="34" cy="62" r="2.2" fill="#1d1a1b"/>
+            <circle cx="58" cy="47" r="1.6" fill="#1d1a1b"/>
+            <ellipse cx="27" cy="52" rx="9" ry="19" transform="rotate(18 27 52)" fill="#1d1a1b"/>
+            <ellipse cx="73" cy="52" rx="9" ry="19" transform="rotate(-18 73 52)" fill="#1d1a1b"/>
+            <circle cx="30" cy="47" r="2" fill="#fff" opacity=".85"/>
+            <ellipse cx="50" cy="70" rx="14" ry="11" fill="#fff" stroke="#2b2426" stroke-width="1.6"/>
+            <circle cx="41" cy="51" r="3.4" fill="#1d1a1b"/>
+            <circle cx="59" cy="51" r="3.4" fill="#1d1a1b"/>
+            <circle cx="42.2" cy="49.8" r="1.1" fill="#fff"/>
+            <circle cx="60.2" cy="49.8" r="1.1" fill="#fff"/>
+            <ellipse cx="50" cy="64" rx="5.5" ry="3.8" fill="#1d1a1b"/>
+            <ellipse cx="50" cy="76.5" rx="3.4" ry="4.2" fill="#e86a7a"/>
+            <path d="M50 67.8 v4.4 M50 72.2 q-4.5 3.4 -8 0 M50 72.2 q4.5 3.4 8 0" fill="none" stroke="#2b2426" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="44" cy="70" r=".9" fill="#1d1a1b"/>
+            <circle cx="56" cy="70" r=".9" fill="#1d1a1b"/>
+            <path d="M31 84 q19 9 38 0" fill="none" stroke="#c8323c" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="50" cy="91" r="4" fill="#d9a441" stroke="#a97a22" stroke-width="1"/>
+          </g>
+          <text x="50" y="112" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="700" font-size="9.5" letter-spacing=".5" fill="#7a1420">1 RANDKA</text>
+          <path d="M83 10 c-2 -3 -7 -2 -7 2 c0 3 4 5 7 8 c3 -3 7 -5 7 -8 c0 -4 -5 -5 -7 -2z" fill="#c8323c"/>
+        </svg>
+      </div>
+    <div class="address">
+      <span><small>From:</small>Grześ</span>
+      <span><small>To:</small>Jula</span>
+    </div>
+  </div>
+  <p class="hint" id="hint">Kliknij, żeby otworzyć</p>
+</section>
+
+<!-- ============ LETTER ============ -->
+<article class="letter" id="letter" hidden>
+  <p class="date" id="letterDate"></p>
+  <p class="salutation" id="salutation">Julio...,</p>
+
+  <div id="askPart">
+    <p class="body-text">Wczoraj nie zdązyłem zapytać (albo po prostu chciałem to zrobić w taki sposób), ale w tym lub następnym tygodniu wybieram się do Warszawy, więc...</p>
+    <p class="body-text">pomyślałem, że moglibyśmy gdzieś wyjść, miło się rozmawiało o 6 na stacji</p>
+
+    <h1 class="question">Pójdziesz gdzieś wyskoczyć?</h1>
+
+    <div class="answer-area" id="answerArea">
+      <button class="btn" id="yesBtn" type="button">TAK</button>
+      <button class="btn" id="noBtn" type="button" aria-label="Nie">NIE</button>
+    </div>
+  </div>
+
+  <form id="plans" class="plans" hidden novalidate>
+    <p class="yay">Fajnie, fajnie </p>
+    <p class="plans-lead">Teraz zaznacz, na co masz ochotę, a ja się tym zajmę.</p>
+    <p class="note">Możesz wybrać kilka</p>
+
+    <fieldset class="choices">
+      <legend hidden>Na co masz ochotę</legend>
+      <div class="choice"><input type="checkbox" id="c-spacer" value="Spacer"><label for="c-spacer"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="emo" aria-hidden="true">🚶</span>Spacer</label></div>
+      <div class="choice"><input type="checkbox" id="c-wypad" value="Wypad za miasto"><label for="c-wypad"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="emo" aria-hidden="true">🚗</span>Wypad za miasto</label></div>
+      <div class="choice"><input type="checkbox" id="c-gotowanie" value="Gotowanie"><label for="c-gotowanie"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="emo" aria-hidden="true">🍝</span>Gotowanie</label></div>
+      <div class="choice"><input type="checkbox" id="c-bowling" value="Bowling"><label for="c-bowling"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="emo" aria-hidden="true">🎳</span>Bowling</label></div>
+      <div class="choice"><input type="checkbox" id="c-drink" value="Drink"><label for="c-drink"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="emo" aria-hidden="true">🍸</span>Drink</label></div>
+      <div class="choice"><input type="checkbox" id="c-herbatka" value="Herbatka"><label for="c-herbatka"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="emo" aria-hidden="true">🍵</span>Herbatka</label></div>
+    </fieldset>
+
+    <label class="idea-label" for="idea">Twój pomysł</label>
+    <textarea id="idea" name="idea" maxlength="500" placeholder="np. Koncert pro8bl3mu :P"></textarea>
+
+    <div class="send-row">
+      <button class="btn" id="sendBtn" type="submit">Wyślij odpowiedź</button>
+      <p class="status" id="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div class="done" id="done" hidden>
+    <svg viewBox="0 0 24 22" aria-hidden="true"><path d="M12 21s-9-5.6-9-12a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.4-9 12-9 12z" fill="#c8323c"/></svg>
+    <p class="big">Odpowiedź wysłana!</p>
+    <p>Miło się zrobiło. Do zobaczenia!</p>
+  </div>
+
+</article>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal-card">
+    <svg class="modal-heart" id="modalHeart" viewBox="0 0 24 22" aria-hidden="true"><path d="M12 21s-9-5.6-9-12a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.4-9 12-9 12z" fill="#c8323c"/></svg>
+    <p class="modal-title" id="modalTitle"></p>
+    <p class="modal-text" id="modalText"></p>
+    <div class="modal-summary" id="modalSummary" hidden></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const EMAILJS = {
+    publicKey: 'Ciq5jksQ03rzuzs5a',
+    serviceId: 'service_tirco4i',
+    templateId: 'template_nw159qu'
+  };
+  try { if (window.emailjs) emailjs.init({ publicKey: EMAILJS.publicKey }); } catch (e) {}
+
+  const $ = (s) => document.querySelector(s);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wait = (ms) => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+
+  // dates
+  const now = new Date();
+  $('#letterDate').textContent = now.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // ---------- open envelope ----------
+  const env = $('#envelope'), stage = $('#stage'), letter = $('#letter'), hint = $('#hint');
+  let opened = false;
+
+  async function openEnvelope() {
+    if (opened) return;
+    opened = true;
+    hint.style.visibility = 'hidden';
+    env.classList.add('open');
+    await wait(650);
+    env.classList.add('out');
+    await wait(1100);
+    stage.classList.add('leave');
+    await wait(450);
+    stage.hidden = true;
+    letter.hidden = false;
+    letter.classList.add('in');
+    window.scrollTo(0, 0);
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(placeButtons);
+    placeButtons();
+  }
+  env.addEventListener('click', openEnvelope);
+  env.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
+  });
+
+  // ---------- YES / NO ----------
+  const area = $('#answerArea'), yes = $('#yesBtn'), no = $('#noBtn');
+  const pos = { yes: { x: 0, y: 0 }, no: { x: 0, y: 0 } };
+  let attempts = 0, lastMove = 0;
+
+  function apply() {
+    yes.style.transform = `translate(${pos.yes.x}px, ${pos.yes.y}px)`;
+    no.style.transform = `translate(${pos.no.x}px, ${pos.no.y}px)`;
+  }
+
+  function placeButtons() {
+    const w = area.clientWidth, h = area.clientHeight;
+    if (!w) return;
+    const gap = 18;
+    const yw = yes.offsetWidth, nw = no.offsetWidth;
+    const x0 = Math.max(0, (w - (yw + nw + gap)) / 2);
+    pos.yes = { x: x0, y: (h - yes.offsetHeight) / 2 };
+    pos.no = { x: x0 + yw + gap, y: (h - no.offsetHeight) / 2 };
+    apply();
+  }
+
+  function dodge(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    const t = performance.now();
+    if (t - lastMove < 120) return; // pointerdown + click fire together
+    lastMove = t;
+
+    const w = area.clientWidth, h = area.clientHeight;
+    const nw = no.offsetWidth, nh = no.offsetHeight;
+    const yw = yes.offsetWidth, yh = yes.offsetHeight;
+    const ycx = pos.yes.x + yes.offsetWidth / 2, ycy = pos.yes.y + yes.offsetHeight / 2;
+    const yRect = { l: ycx - yw / 2 - 10, r: ycx + yw / 2 + 10, t: ycy - yh / 2 - 10, b: ycy + yh / 2 + 10 };
+
+    let best = null;
+    for (let i = 0; i < 60; i++) {
+      const x = Math.random() * Math.max(1, w - nw);
+      const y = Math.random() * Math.max(1, h - nh);
+      const overlaps = x < yRect.r && x + nw > yRect.l && y < yRect.b && y + nh > yRect.t;
+      const dist = Math.hypot(x - pos.no.x, y - pos.no.y);
+      if (!overlaps && dist > Math.min(90, w / 4)) { best = { x, y }; break; }
+      if (!overlaps && (!best || dist > best.d)) best = { x, y, d: dist };
+    }
+    if (best) pos.no = { x: best.x, y: best.y };
+
+    attempts++;
+    apply();
+  }
+
+  no.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') dodge(); });
+  no.addEventListener('pointerdown', dodge);
+  no.addEventListener('touchstart', dodge, { passive: false });
+  no.addEventListener('click', dodge);
+
+  window.addEventListener('resize', () => { if (!letter.hidden && !$('#askPart').hidden) placeButtons(); });
+
+  function heartBurst(el) {
+    if (reduce) return;
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (let i = 0; i < 18; i++) {
+      const s = document.createElement('span');
+      s.className = 'heart-fx';
+      s.textContent = '♥';
+      const a = Math.random() * Math.PI * 2, d = 70 + Math.random() * 110;
+      s.style.left = cx + 'px';
+      s.style.top = cy + 'px';
+      s.style.fontSize = (14 + Math.random() * 16) + 'px';
+      s.style.setProperty('--dx', Math.cos(a) * d + 'px');
+      s.style.setProperty('--dy', Math.sin(a) * d - 30 + 'px');
+      s.style.setProperty('--rot', (Math.random() * 60 - 30) + 'deg');
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1200);
+    }
+  }
+
+  yes.addEventListener('click', async () => {
+    heartBurst(yes);
+    await wait(350);
+    $('#askPart').hidden = true;
+    $('#salutation').hidden = true;
+    $('#plans').hidden = false;
+    letter.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  // ---------- send ----------
+  const form = $('#plans'), sendBtn = $('#sendBtn'), status = $('#status');
+  const modal = $('#modal'), mHeart = $('#modalHeart'), mTitle = $('#modalTitle'), mText = $('#modalText'),
+        mSummary = $('#modalSummary'), mActions = $('#modalActions');
+  let lastParams = null, lastSummary = null, sent = false;
+
+  const esc = (t) => t.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function showModal({ title, text, beat = false, summary = null, actions = [] }) {
+    mTitle.textContent = title;
+    mText.textContent = text;
+    mHeart.classList.toggle('beat', beat);
+    if (summary) { mSummary.innerHTML = summary; mSummary.hidden = false; } else { mSummary.hidden = true; }
+    mActions.innerHTML = '';
+    actions.forEach(a => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn ' + (a.primary ? 'btn-primary' : 'btn-ghost');
+      b.textContent = a.label;
+      b.addEventListener('click', a.onClick);
+      mActions.appendChild(b);
+    });
+    modal.hidden = false;
+    const first = mActions.querySelector('button');
+    if (first) first.focus();
+  }
+  function closeModal() {
+    modal.hidden = true;
+    if (sent) {
+      form.hidden = true;
+      $('#done').hidden = false;
+      $('#done').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+  modal.addEventListener('click', (e) => { if (e.target === modal && !sendBtn.disabled) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden && !sendBtn.disabled) closeModal(); });
+
+  async function send() {
+    sendBtn.disabled = true;
+    status.textContent = '';
+    showModal({ title: 'Wysyłam…', text: 'Twoja odpowiedź leci.', beat: true });
+    try {
+      if (!window.emailjs) throw new Error('EmailJS not loaded');
+      await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, lastParams);
+      sent = true;
+      sendBtn.disabled = false;
+      const { picked, idea } = lastSummary;
+      let summary = `<p><b>Wybrałaś:</b> ${picked.length ? esc(picked.join(', ')) : 'nic, zostawiasz wybór Grzesiowi'}</p>`;
+      if (idea) summary += `<p><b>Twój pomysł:</b> ${esc(idea)}</p>`;
+      showModal({
+        title: 'Odpowiedź wysłana!',
+        text: 'Miło się zrobiło',
+        summary,
+        actions: [{ label: 'Do zobaczenia ♥', primary: true, onClick: closeModal }]
+      });
+      heartBurst(mHeart);
+    } catch (err) {
+      console.error(err);
+      sendBtn.disabled = false;
+      showModal({
+        title: 'Nie udało się wysłać',
+        text: 'Odpowiedź nie doszła. Sprawdź internet i spróbuj jeszcze raz.',
+        actions: [
+          { label: 'Spróbuj jeszcze raz', primary: true, onClick: send },
+          { label: 'Zamknij', onClick: closeModal }
+        ]
+      });
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const picked = [...form.querySelectorAll('.choices input:checked')].map(i => i.value);
+    const idea = $('#idea').value.trim();
+
+    let answer = 'TAK 💖';
+    if (attempts > 0) answer += ` (wcześniej ${attempts}× próbowała kliknąć NIE 😏)`;
+
+    const params = {
+      Answer: answer,
+      Choices: picked.length ? picked.join(', ') : 'Nic nie zaznaczyła, zostawia wybór Tobie',
+      Other: idea || 'Brak',
+      time: new Date().toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'long', timeStyle: 'short' })
+    };
+
+    lastParams = params;
+    lastSummary = { picked, idea };
+    send();
+  });
+})();
+</script>
+</body>
+</html>
