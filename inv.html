@@ -466,11 +466,23 @@
   // ---------- open envelope ----------
   const env = $('#envelope'), stage = $('#stage'), letter = $('#letter'), hint = $('#hint');
   let opened = false;
-
+  // powiadomienie mailem, że koperta została otwarta (pomijane dla linku z #test)
+  function notifyOpened() {
+    if (location.hash === '#test' || !window.emailjs) return;
+    try {
+      emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+        Answer: '👀 Otworzyła kopertę',
+        Choices: '—',
+        Other: '—',
+        time: new Date().toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'long', timeStyle: 'short' })
+      }).catch(() => {});
+    } catch (e) {}
+  }
   async function openEnvelope() {
     if (opened) return;
     opened = true;
     hint.style.visibility = 'hidden';
+    notifyOpened();
     env.classList.add('open');
     await wait(650);
     env.classList.add('out');
