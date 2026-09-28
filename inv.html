@@ -632,7 +632,7 @@
       sent = true;
       sendBtn.disabled = false;
       const { picked, idea } = lastSummary;
-      let summary = `<p><b>Wybrałaś:</b> ${picked.length ? esc(picked.join(', ')) : 'nic, zostawiasz wybór Grzesiowi'}</p>`;
+      let summary = `<p><b>Wybrałaś:</b> ${picked.length ? esc(picked.join(', ')) : 'nic, zostawiasz wybór mi'}</p>`;
       if (idea) summary += `<p><b>Twój pomysł:</b> ${esc(idea)}</p>`;
       showModal({
         title: 'Odpowiedź wysłana!',
